@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// Store provides spgateway config.
+// Config provides spgateway config.
 type Config struct {
 	HashKey    string
 	HashIV     string
