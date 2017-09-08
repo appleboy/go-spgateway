@@ -7,8 +7,20 @@ import (
 )
 
 func TestCheckValue(t *testing.T) {
-	h := New("1A3S21DAS3D1AS65D1", "1AS56D1AS24D")
-	CheckValue := h.CheckValue("200", "123456", "20140901001", "1403243286", "1.1")
+	MerchantID := "123456"
+	HashKey := "1A3S21DAS3D1AS65D1"
+	HashIV := "1AS56D1AS24D"
+	h := New(MerchantID, HashKey, HashIV)
 
-	assert.Equal(t, "841F57D750FB4B04B62DDC3ECDC26F1F4028410927DD28BD5B2E34791CC434D2", CheckValue)
+	order := Order{
+		Amt:             200,
+		MerchantOrderNo: "20140901001",
+		TimeStamp:       "1403243286",
+		Version:         "1.1",
+	}
+
+	CheckValue := h.CheckValue(order)
+	expect := "841F57D750FB4B04B62DDC3ECDC26F1F4028410927DD28BD5B2E34791CC434D2"
+
+	assert.Equal(t, expect, CheckValue)
 }
