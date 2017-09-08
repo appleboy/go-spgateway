@@ -11,16 +11,17 @@ clone:
 pipeline:
   test:
     image: appleboy/golang-testing:1.9
-    secrets: [ codecov_token ]
     commands:
       - make vet
       - make lint
       - make embedmd
       - make test
-      - make coverage
 
-    when:
-      event: [ push, tag, pull_request ]
+  codecov:
+    image: robertstettner/drone-codecov
+    secrets: [ codecov_token ]
+    files:
+      - coverage.txt
 
   facebook:
     image: appleboy/drone-facebook
