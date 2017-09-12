@@ -20,7 +20,7 @@ func TestCheckValue(t *testing.T) {
 		Version:         "1.1",
 	}
 
-	CheckValue := store.CheckValue(order)
+	CheckValue := store.OrderCheckValue(order)
 	expect := "841F57D750FB4B04B62DDC3ECDC26F1F4028410927DD28BD5B2E34791CC434D2"
 
 	assert.Equal(t, expect, CheckValue)
@@ -39,7 +39,7 @@ func TestCheckCode(t *testing.T) {
 		TradeNo:         "14061313541640927",
 	}
 
-	CheckValue := store.CheckCode(order)
+	CheckValue := store.OrderCheckCode(order)
 	expect := "62C687AF6409E46E79769FAF54F54FE7E75AAE50BAF0767752A5C337670B8EDB"
 
 	assert.Equal(t, expect, CheckValue)

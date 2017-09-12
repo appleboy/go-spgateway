@@ -39,8 +39,12 @@ func New(config Config) *Store {
 	}
 }
 
-// CheckValue return spgateway check value for post data.
-func (s *Store) CheckValue(order Order) string {
+func (s *Store) hashSha256(str string) string {
+	return strings.ToUpper(fmt.Sprintf("%x", sha256.Sum256([]byte(str))))
+}
+
+// OrderCheckValue return spgateway check value for post data.
+func (s *Store) OrderCheckValue(order Order) string {
 	querys := fmt.Sprintf("HashKey=%s&Amt=%s&MerchantID=%s&MerchantOrderNo=%s&TimeStamp=%s&Version=%s&HashIV=%s",
 		s.HashKey,
 		strconv.Itoa(order.Amt),
@@ -50,13 +54,12 @@ func (s *Store) CheckValue(order Order) string {
 		order.Version,
 		s.HashIV,
 	)
-	hash := sha256.Sum256([]byte(querys))
 
-	return strings.ToUpper(fmt.Sprintf("%x", hash))
+	return s.hashSha256(querys)
 }
 
-// CheckCode return spgateway check value for post data.
-func (s *Store) CheckCode(order Order) string {
+// OrderCheckCode return spgateway check value for post data.
+func (s *Store) OrderCheckCode(order Order) string {
 	querys := fmt.Sprintf("HashIV=%s&Amt=%s&MerchantID=%s&MerchantOrderNo=%s&TradeNo=%s&HashKey=%s",
 		s.HashIV,
 		strconv.Itoa(order.Amt),
@@ -65,7 +68,6 @@ func (s *Store) CheckCode(order Order) string {
 		order.TradeNo,
 		s.HashKey,
 	)
-	hash := sha256.Sum256([]byte(querys))
 
-	return strings.ToUpper(fmt.Sprintf("%x", hash))
+	return s.hashSha256(querys)
 }
