@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/google/go-querystring/query"
 )
 
 // Config provides spgateway config.
@@ -28,6 +30,15 @@ type Order struct {
 	TimeStamp       string
 	Version         string
 	TradeNo         string
+}
+
+// Credit provides credit config.
+type Credit struct {
+	Date       string
+	UseInfo    string
+	CreditInst string
+	CreditRed  string
+	MerchantID string
 }
 
 // New returns a new empty handler.
@@ -66,6 +77,20 @@ func (s *Store) OrderCheckCode(order Order) string {
 		s.MerchantID,
 		order.MerchantOrderNo,
 		order.TradeNo,
+		s.HashKey,
+	)
+
+	return s.hashSha256(querys)
+}
+
+// CreditCheckCode return spgateway check value for post data.
+func (s *Store) CreditCheckCode(credit Credit) string {
+	credit.MerchantID = s.MerchantID
+	v, _ := query.Values(credit)
+
+	querys := fmt.Sprintf("HashIV=%s&%s&HashKey=%s",
+		s.HashIV,
+		v.Encode(),
 		s.HashKey,
 	)
 

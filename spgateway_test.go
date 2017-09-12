@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCheckValue(t *testing.T) {
+func TestOrderCheckValue(t *testing.T) {
 	store := New(Config{
 		MerchantID: "123456",
 		HashKey:    "1A3S21DAS3D1AS65D1",
@@ -26,7 +26,7 @@ func TestCheckValue(t *testing.T) {
 	assert.Equal(t, expect, CheckValue)
 }
 
-func TestCheckCode(t *testing.T) {
+func TestOrderCheckCode(t *testing.T) {
 	store := New(Config{
 		MerchantID: "1422967",
 		HashKey:    "abcdefg",
@@ -41,6 +41,26 @@ func TestCheckCode(t *testing.T) {
 
 	CheckValue := store.OrderCheckCode(order)
 	expect := "62C687AF6409E46E79769FAF54F54FE7E75AAE50BAF0767752A5C337670B8EDB"
+
+	assert.Equal(t, expect, CheckValue)
+}
+
+func TestCreditCheckCode(t *testing.T) {
+	store := New(Config{
+		MerchantID: "ABC1422967",
+		HashKey:    "abcdefg",
+		HashIV:     "1234567",
+	})
+
+	credit := Credit{
+		Date:       "2015-01-01 00:00:00",
+		UseInfo:    "ON",
+		CreditInst: "ON",
+		CreditRed:  "ON",
+	}
+
+	CheckValue := store.CreditCheckCode(credit)
+	expect := "77A1EF8F23C94CB63A60A7EDF99AC3E0F4688D96AF6D4B34370D306ABD33D0F6"
 
 	assert.Equal(t, expect, CheckValue)
 }
