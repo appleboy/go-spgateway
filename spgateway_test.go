@@ -13,7 +13,7 @@ func TestOrderCheckValue(t *testing.T) {
 		HashIV:     "1AS56D1AS24D",
 	})
 
-	order := Order{
+	order := OrderCheckValue{
 		Amt:             200,
 		MerchantOrderNo: "20140901001",
 		TimeStamp:       "1403243286",
@@ -33,7 +33,7 @@ func TestOrderCheckCode(t *testing.T) {
 		HashIV:     "1234567",
 	})
 
-	order := Order{
+	order := OrderCheckCode{
 		Amt:             100,
 		MerchantOrderNo: "840f022",
 		TradeNo:         "14061313541640927",

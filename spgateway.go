@@ -3,7 +3,6 @@ package spgateway
 import (
 	"crypto/sha256"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/google/go-querystring/query"
@@ -23,12 +22,20 @@ type Store struct {
 	MerchantID string
 }
 
-// Order provides order config.
-type Order struct {
+// OrderCheckValue provides order config.
+type OrderCheckValue struct {
 	Amt             int
 	MerchantOrderNo string
+	MerchantID      string
 	TimeStamp       string
 	Version         string
+}
+
+// OrderCheckCode provides order config.
+type OrderCheckCode struct {
+	Amt             int
+	MerchantOrderNo string
+	MerchantID      string
 	TradeNo         string
 }
 
@@ -55,14 +62,13 @@ func (s *Store) hashSha256(str string) string {
 }
 
 // OrderCheckValue return spgateway check value for post data.
-func (s *Store) OrderCheckValue(order Order) string {
-	querys := fmt.Sprintf("HashKey=%s&Amt=%s&MerchantID=%s&MerchantOrderNo=%s&TimeStamp=%s&Version=%s&HashIV=%s",
+func (s *Store) OrderCheckValue(order OrderCheckValue) string {
+	order.MerchantID = s.MerchantID
+	v, _ := query.Values(order)
+
+	querys := fmt.Sprintf("HashKey=%s&%s&HashIV=%s",
 		s.HashKey,
-		strconv.Itoa(order.Amt),
-		s.MerchantID,
-		order.MerchantOrderNo,
-		order.TimeStamp,
-		order.Version,
+		v.Encode(),
 		s.HashIV,
 	)
 
@@ -70,13 +76,13 @@ func (s *Store) OrderCheckValue(order Order) string {
 }
 
 // OrderCheckCode return spgateway check value for post data.
-func (s *Store) OrderCheckCode(order Order) string {
-	querys := fmt.Sprintf("HashIV=%s&Amt=%s&MerchantID=%s&MerchantOrderNo=%s&TradeNo=%s&HashKey=%s",
+func (s *Store) OrderCheckCode(order OrderCheckCode) string {
+	order.MerchantID = s.MerchantID
+	v, _ := query.Values(order)
+
+	querys := fmt.Sprintf("HashIV=%s&%s&HashKey=%s",
 		s.HashIV,
-		strconv.Itoa(order.Amt),
-		s.MerchantID,
-		order.MerchantOrderNo,
-		order.TradeNo,
+		v.Encode(),
 		s.HashKey,
 	)
 
