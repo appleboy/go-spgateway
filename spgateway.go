@@ -48,6 +48,15 @@ type Credit struct {
 	MerchantID string
 }
 
+// Invoice provides invoice check code config.
+type Invoice struct {
+	InvoiceTransNo  string
+	MerchantOrderNo string
+	RandomNum       string
+	TotalAmt        int
+	MerchantID      string
+}
+
 // New returns a new empty handler.
 func New(config Config) *Store {
 	return &Store{
@@ -93,6 +102,20 @@ func (s *Store) OrderCheckCode(order OrderCheckCode) string {
 func (s *Store) CreditCheckCode(credit Credit) string {
 	credit.MerchantID = s.MerchantID
 	v, _ := query.Values(credit)
+
+	querys := fmt.Sprintf("HashIV=%s&%s&HashKey=%s",
+		s.HashIV,
+		v.Encode(),
+		s.HashKey,
+	)
+
+	return s.hashSha256(querys)
+}
+
+// InvoiceCheckCode return spgateway check value for post data.
+func (s *Store) InvoiceCheckCode(invoice Invoice) string {
+	invoice.MerchantID = s.MerchantID
+	v, _ := query.Values(invoice)
 
 	querys := fmt.Sprintf("HashIV=%s&%s&HashKey=%s",
 		s.HashIV,

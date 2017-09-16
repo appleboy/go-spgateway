@@ -64,3 +64,23 @@ func TestCreditCheckCode(t *testing.T) {
 
 	assert.Equal(t, expect, CheckValue)
 }
+
+func TestInvoiceCheckCode(t *testing.T) {
+	store := New(Config{
+		MerchantID: "3622183",
+		HashKey:    "abcdefg",
+		HashIV:     "1234567",
+	})
+
+	invoice := Invoice{
+		MerchantOrderNo: "201409170000001",
+		InvoiceTransNo:  "14061313541640927",
+		TotalAmt:        500,
+		RandomNum:       "0142",
+	}
+
+	CheckValue := store.InvoiceCheckCode(invoice)
+	expect := "C4156CA208897278C84D929DE48F4A2BCD1FF3ED4B97D09A14E2E2143E3EFD2E"
+
+	assert.Equal(t, expect, CheckValue)
+}
