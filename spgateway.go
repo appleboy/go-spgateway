@@ -158,16 +158,10 @@ func (s *Store) CreateMpgAesEncrypt(tradeInfo interface{}) (string, error) {
 // Encrypt string
 func Encrypt(key, plaintext, iv []byte) ([]byte, error) {
 	plaintext = PKCS5Padding(plaintext, 32)
-	// CBC mode works on blocks so plaintexts may need to be padded to the
-	// next whole block. For an example of such padding, see
-	// https://tools.ietf.org/html/rfc5246#section-6.2.3.2. Here we'll
-	// assume that the plaintext is already of the correct length.
-	if len(plaintext)%aes.BlockSize != 0 {
-		panic("plaintext is not a multiple of the block size")
-	}
+
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		panic(err)
+		return []byte(""), err
 	}
 
 	// The IV needs to be unique, but not secure. Therefore it's common to
