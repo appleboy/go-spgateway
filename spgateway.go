@@ -5,6 +5,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"strings"
 
@@ -140,8 +141,8 @@ func (s *Store) TradeSha(tradeInfo string) string {
 	return s.hashSha256(querys)
 }
 
-// CreateMpgAesEncrypt encrypt trade info data
-func (s *Store) CreateMpgAesEncrypt(tradeInfo interface{}) (string, error) {
+// TradeInfoEncrypter encrypt trade info data
+func (s *Store) TradeInfoEncrypter(tradeInfo interface{}) (string, error) {
 	v, _ := query.Values(tradeInfo)
 	data := []byte(v.Encode())
 	key := []byte(s.HashKey)
@@ -153,6 +154,55 @@ func (s *Store) CreateMpgAesEncrypt(tradeInfo interface{}) (string, error) {
 	}
 
 	return fmt.Sprintf("%x", ciphertext), nil
+}
+
+// TradeInfoDecrypter decrypt trade info data
+func (s *Store) TradeInfoDecrypter(data string) (string, error) {
+	key := []byte(s.HashKey)
+	iv := []byte(s.HashIV)
+
+	ciphertext, err := Decrypt(data, key, iv)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s", PKCS5UnPadding(ciphertext)), nil
+}
+
+// Decrypt string
+func Decrypt(s string, key, iv []byte) ([]byte, error) {
+	ciphertext, _ := hex.DecodeString(s)
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		panic(err)
+	}
+
+	// The IV needs to be unique, but not secure. Therefore it's common to
+	// include it at the beginning of the ciphertext.
+	if len(ciphertext) < aes.BlockSize {
+		panic("ciphertext too short")
+	}
+
+	// CBC mode always works in whole blocks.
+	if len(ciphertext)%aes.BlockSize != 0 {
+		panic("ciphertext is not a multiple of the block size")
+	}
+
+	mode := cipher.NewCBCDecrypter(block, iv)
+
+	// CryptBlocks can work in-place if the two arguments are the same.
+	mode.CryptBlocks(ciphertext, ciphertext)
+
+	// If the original plaintext lengths are not a multiple of the block
+	// size, padding would have to be added when encrypting, which would be
+	// removed at this point. For an example, see
+	// https://tools.ietf.org/html/rfc5246#section-6.2.3.2. However, it's
+	// critical to note that ciphertexts must be authenticated (i.e. by
+	// using crypto/hmac) before being decrypted in order to avoid creating
+	// a padding oracle.
+
+	return ciphertext, nil
 }
 
 // Encrypt string
