@@ -125,3 +125,14 @@ func (s *Store) InvoiceCheckCode(invoice Invoice) string {
 
 	return s.hashSha256(querys)
 }
+
+// TradeSha return spgateway trade sha 256 encrypt.
+func (s *Store) TradeSha(tradeInfo string) string {
+	querys := fmt.Sprintf("HashKey=%s&%s&HashIV=%s",
+		s.HashKey,
+		tradeInfo,
+		s.HashIV,
+	)
+
+	return s.hashSha256(querys)
+}
