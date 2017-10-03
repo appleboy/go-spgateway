@@ -98,3 +98,36 @@ func TestTradeSha(t *testing.T) {
 
 	assert.Equal(t, expect, tradeSha)
 }
+
+type EncryptCheckValue struct {
+	Amt             string
+	MerchantOrderNo string
+	MerchantID      string
+	TimeStamp       string
+	Version         string
+	ItemDesc        string
+	RespondType     string
+}
+
+func TestMpgAesEncrypt(t *testing.T) {
+	store := New(Config{
+		HashKey: "12345678901234567890123456789012",
+		HashIV:  "1234567890123456",
+	})
+
+	data := EncryptCheckValue{
+		MerchantID:      "3430112",
+		RespondType:     "JSON",
+		TimeStamp:       "1485232229",
+		Version:         "1.4",
+		MerchantOrderNo: "S_1485232229",
+		Amt:             "40",
+		ItemDesc:        "UnitTest",
+	}
+
+	aes, err := store.CreateMpgAesEncrypt(data)
+	expect := "e15b868e4f7dbf086a705fbab052ad13daaf9e8750f7fba46cbb6e3b65c689e7c3645e56c1c91475a868cd61478c75fe494b28bf126b3009be4185cf3fc445ce40f9ad78f9e07af0772ed4c2ac54479d93c57f98b2087ceebc5787094893962d7d34d6b969fbfccda635cba69783fa0a9505c01d2cfe7693ff7652ac46193138"
+
+	assert.NoError(t, err)
+	assert.Equal(t, expect, aes)
+}
