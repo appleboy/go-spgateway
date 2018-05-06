@@ -12,7 +12,7 @@ import (
 // 商店自訂單號(MerchantOrderNo)、時間戳記(TimeStamp)、程式串接版本(Version)，且參數需照英文字母 A~Z 排序
 // 若第一字母相同比較第二字母，以此類推。將串聯後的字串前後加上商店專屬加密 HashKey 與商店專屬加密 HashIV。
 // 將串聯後的字串用 SHA256 壓碼後轉大寫。
-func ExampleNew_order_check_value() {
+func ExampleStore_OrderCheckValue() {
 	store := spgateway.New(spgateway.Config{
 		MerchantID: "123456",
 		HashKey:    "1A3S21DAS3D1AS65D1",
@@ -38,7 +38,7 @@ func ExampleNew_order_check_value() {
 // MerchantOrderNo(商店訂單編號)、TradeNo(智付通交易序號)，且參數需照英文字母 A~Z 排序，若第一
 // 字母相同比較第二字母，以此類推。將串聯後的字串前後加上商店專屬加密 HashIV 值與商店專屬加密 HashKey 值。
 // 將串聯後的字串用 SHA256 壓碼後轉大寫。
-func ExampleNew_order_check_code() {
+func ExampleStore_OrderCheckCode() {
 	store := spgateway.New(spgateway.Config{
 		MerchantID: "1422967",
 		HashKey:    "abcdefg",
