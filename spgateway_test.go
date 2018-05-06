@@ -1,10 +1,37 @@
 package spgateway
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+// CheckValue 組合及加密方法
+//
+// 排序欄位字串並用&符號串聯起來將回傳資料其中的五個欄位，分別是訂單金額(Amt)、商店代號(MerchantID)、
+// 商店自訂單號(MerchantOrderNo)、時間戳記(TimeStamp)、程式串接版本(Version)，且參數需照英文字母 A~Z 排序
+// 若第一字母相同比較第二字母，以此類推。將串聯後的字串前後加上商店專屬加密 HashKey 與商店專屬加密 HashIV。
+// 將串聯後的字串用 SHA256 壓碼後轉大寫。
+func ExampleOrderChackValue_testing() {
+	store := New(Config{
+		MerchantID: "123456",
+		HashKey:    "1A3S21DAS3D1AS65D1",
+		HashIV:     "1AS56D1AS24D",
+	})
+
+	order := OrderCheckValue{
+		Amt:             200,
+		MerchantOrderNo: "20140901001",
+		TimeStamp:       "1403243286",
+		Version:         "1.1",
+	}
+
+	fmt.Println(store.OrderCheckValue(order))
+
+	// Output:
+	// 841F57D750FB4B04B62DDC3ECDC26F1F4028410927DD28BD5B2E34791CC434D2
+}
 
 func TestOrderCheckValue(t *testing.T) {
 	store := New(Config{
