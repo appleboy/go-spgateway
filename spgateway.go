@@ -166,7 +166,7 @@ func (s *Store) TradeInfoDecrypter(data string) (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("%s", PKCS5UnPadding(ciphertext)), nil
+	return string(PKCS5UnPadding(ciphertext)), nil
 }
 
 // Decrypt string

@@ -91,6 +91,7 @@ func TestTradeSha(t *testing.T) {
 		HashIV:  "1234567890123456",
 	})
 
+	//nolint:lll
 	tradeInfo := "ff91c8aa01379e4de621a44e5f11f72e4d25bdb1a18242db6cef9ef07d80b0165e476fd1d9acaa53170272c82d122961e1a0700a7427cfa1cf90db7f6d6593bbc93102a4d4b9b66d9974c13c31a7ab4bba1d4e0790f0cbbbd7ad64c6d3c8012a601ceaa808bff70f94a8efa5a4f984b9d41304ffd879612177c622f75f4214fa"
 
 	tradeSha := store.TradeSha(tradeInfo)
@@ -126,6 +127,7 @@ func TestTradeInfoEncrypter(t *testing.T) {
 	}
 
 	aes, err := store.TradeInfoEncrypter(data)
+	//nolint:lll
 	expect := "e15b868e4f7dbf086a705fbab052ad13daaf9e8750f7fba46cbb6e3b65c689e7c3645e56c1c91475a868cd61478c75fe494b28bf126b3009be4185cf3fc445ce40f9ad78f9e07af0772ed4c2ac54479d93c57f98b2087ceebc5787094893962d7d34d6b969fbfccda635cba69783fa0a9505c01d2cfe7693ff7652ac46193138"
 
 	assert.NoError(t, err)
@@ -138,8 +140,10 @@ func TestTradeInfoDecrypter(t *testing.T) {
 		HashIV:  "1234567890123456",
 	})
 
+	//nolint:lll
 	data := "e15b868e4f7dbf086a705fbab052ad13daaf9e8750f7fba46cbb6e3b65c689e7c3645e56c1c91475a868cd61478c75fe494b28bf126b3009be4185cf3fc445ce40f9ad78f9e07af0772ed4c2ac54479d93c57f98b2087ceebc5787094893962d7d34d6b969fbfccda635cba69783fa0a9505c01d2cfe7693ff7652ac46193138"
 	aes, err := store.TradeInfoDecrypter(data)
+	//nolint:lll
 	expect := "Amt=40&ItemDesc=UnitTest&MerchantID=3430112&MerchantOrderNo=S_1485232229&RespondType=JSON&TimeStamp=1485232229&Version=1.4"
 
 	assert.NoError(t, err)
