@@ -1,9 +1,7 @@
-package spgateway_test
+package spgateway
 
 import (
 	"fmt"
-
-	spgateway "github.com/appleboy/go-spgateway"
 )
 
 // CheckValue 組合及加密方法
@@ -13,13 +11,13 @@ import (
 // 若第一字母相同比較第二字母，以此類推。將串聯後的字串前後加上商店專屬加密 HashKey 與商店專屬加密 HashIV。
 // 將串聯後的字串用 SHA256 壓碼後轉大寫。
 func ExampleStore_OrderCheckValue() {
-	store := spgateway.New(spgateway.Config{
+	store := New(Config{
 		MerchantID: "123456",
 		HashKey:    "1A3S21DAS3D1AS65D1",
 		HashIV:     "1AS56D1AS24D",
 	})
 
-	order := spgateway.OrderCheckValue{
+	order := OrderCheckValue{
 		Amt:             200,
 		MerchantOrderNo: "20140901001",
 		TimeStamp:       "1403243286",
@@ -39,13 +37,13 @@ func ExampleStore_OrderCheckValue() {
 // 字母相同比較第二字母，以此類推。將串聯後的字串前後加上商店專屬加密 HashIV 值與商店專屬加密 HashKey 值。
 // 將串聯後的字串用 SHA256 壓碼後轉大寫。
 func ExampleStore_OrderCheckCode() {
-	store := spgateway.New(spgateway.Config{
+	store := New(Config{
 		MerchantID: "1422967",
 		HashKey:    "abcdefg",
 		HashIV:     "1234567",
 	})
 
-	order := spgateway.OrderCheckCode{
+	order := OrderCheckCode{
 		Amt:             100,
 		MerchantOrderNo: "840f022",
 		TradeNo:         "14061313541640927",
